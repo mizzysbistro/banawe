@@ -137,6 +137,94 @@ tr.critr td{background:color-mix(in srgb,var(--bad) 12%,var(--card))}
 .calc-screen{min-height:122px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;padding:8px 6px 14px;overflow:hidden;background:var(--bg);border-radius:14px;margin-bottom:12px}.calc-expression{font-size:20px;color:var(--mute);min-height:30px;white-space:nowrap}.calc-answer{font-size:52px;line-height:1.05;color:var(--ink);font-weight:700;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}.calcgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.calcgrid button{height:64px;font-size:25px;font-weight:650;border-radius:11px;border:1px solid var(--line);background:var(--soft);color:var(--ink);transition:transform .08s,filter .12s,background .12s}.calcgrid button:active{transform:scale(.95);filter:brightness(1.08)}.calcgrid .op{background:var(--pri);color:var(--prit);border-color:var(--pri);font-size:28px}.calcgrid .func{background:var(--line);color:var(--ink)}.calcgrid .eq{background:var(--acc);color:#000;border-color:var(--acc);height:64px}.calcclose{width:100%;margin-top:12px;background:var(--bg);color:var(--ink);border-color:var(--line)}.pinw-stable{animation:none!important}.timer-controls{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:9px;padding:2px 5px;background:var(--card)}.timer-controls button{padding:2px 9px;min-width:30px}.timer-controls b{min-width:48px;text-align:center;font-size:12px}
 @media(max-width:500px){.calcw{max-width:350px;padding:14px}.calcgrid{gap:8px}.calcgrid button{height:58px}.calc-answer{font-size:46px}}
 @media(prefers-reduced-motion:no-preference){.card{animation:cardIn .16s ease-out both}.bn button{transition:transform .1s,background .15s}.bn button:active{transform:translateY(2px)}@keyframes cardIn{from{opacity:.82;transform:translateY(4px)}to{opacity:1;transform:none}}}
+
+/* Mizzy's Bistro visual refresh — inspired by the approved dark emerald POS reference.
+   Styling-only overrides: preserve existing menu data, prices, and POS behavior. */
+:root{
+ --bg:#031514;--card:#082321;--ink:#f2faf7;--mute:#a1b9b4;--line:#17413b;
+ --pri:#009b6a;--prit:#fff;--acc:#f4b323;--bad:#ef766e;--soft:#0d3930;
+ color-scheme:dark;
+}
+:root[data-theme="light"]{
+ --bg:#f3f7f5;--card:#fff;--ink:#12302f;--mute:#5d7471;--line:#dbe4e1;
+ --pri:#087e5b;--prit:#fff;--acc:#e8a317;--bad:#c8433a;--soft:#e4f0ec;
+ color-scheme:light;
+}
+html,body{min-height:100%;background:var(--bg)}
+body{
+ background:radial-gradient(ellipse at 10% 0%,rgba(0,128,87,.13),transparent 34%),var(--bg);
+ font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+header{
+ background:linear-gradient(110deg,#031b18,#07352c 72%,#006a4a);
+ border-bottom:1px solid #17654d;box-shadow:0 5px 22px rgba(0,0,0,.22);
+ padding:12px 16px;gap:12px;
+}
+header h1{font-size:21px;letter-spacing:-.5px;font-weight:800}
+nav button{border-radius:10px;padding:9px 12px}
+nav button.on{background:#009b6a;color:#fff;box-shadow:0 3px 12px rgba(0,155,106,.2)}
+main{max-width:1500px;padding:16px 16px 104px}
+.card{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--card) 96%,#0b4938),var(--card));
+ border:1px solid var(--line);border-radius:15px;padding:14px;
+ box-shadow:0 8px 24px rgba(0,0,0,.13);
+}
+.pos{grid-template-columns:minmax(0,1fr) minmax(300px,370px);gap:14px}
+button{border-radius:10px;transition:background .14s,border-color .14s,transform .08s}
+button.p,.p{
+ background:linear-gradient(110deg,#009b6a,#00a975);color:#fff;border-color:#00a975;
+ box-shadow:0 3px 10px rgba(0,155,106,.12);
+}
+button.p:hover{filter:brightness(1.08)}
+input,select,textarea{border-radius:10px;background:color-mix(in srgb,var(--card) 86%,#000);border-color:var(--line)}
+.chip{border-radius:10px;background:var(--card);border-color:var(--line);padding:8px 12px}
+.chip.on{background:#009b6a;color:#fff;border-color:#00a975}
+.grid{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}
+.tile{
+ min-height:110px;border-radius:13px;padding:11px;
+ background:linear-gradient(160deg,#10352e,var(--card));
+ border-color:#19453d;box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+.tile .e{font-size:31px;background:linear-gradient(135deg,#f7c47a,#fff0d7);border-radius:9px;padding:4px;width:100%;text-align:center}
+.tile b{font-size:14px;line-height:1.25;margin-top:4px}
+.tile small{font-size:13px;color:var(--ink);font-weight:650}
+.tile:hover:not(.out){border-color:#00a975;box-shadow:0 5px 16px rgba(0,155,106,.18)}
+.line{border-bottom-color:var(--line);padding:9px 0}
+.tot .g{border-top-color:var(--line)}
+.tag{background:#0d4937;color:#baf6dc}
+.tag.w{background:#5b4310;color:#ffe4a0}.tag.b{background:#4e211f;color:#ffc2bc}
+.bn{background:rgba(4,28,25,.97);backdrop-filter:blur(14px);border-top:1px solid #17483d}
+.bn button{color:#9bb8b0}
+.bn button.on{color:#fff;background:#007c56;border-radius:10px;margin:4px 3px}
+#sheet{background:var(--card);border-color:var(--line);box-shadow:0 -8px 28px rgba(0,0,0,.25)}
+#modal{background:rgba(0,12,10,.72);backdrop-filter:blur(4px)}
+.box{background:linear-gradient(150deg,#0d302a,#071d1a);border:1px solid #205448;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.mi{border-color:var(--line);background:color-mix(in srgb,var(--card) 92%,#000)}
+.sg button{border-radius:12px;background:var(--card)}
+.sg button.on{background:#009b6a;color:#fff;border-color:#00b982}
+.mopt{background:var(--card);border-color:var(--line)}
+.mopt.on{background:var(--soft);border-color:#00b982}
+.pinw{max-width:350px;padding:18px 8px}
+.pinlock{background:#0b4937;color:#b8f5d9;border:1px solid #17694e}
+.pk{gap:10px}
+.pkey{width:min(72px,19vw);height:min(72px,19vw);background:linear-gradient(145deg,#10362f,#071e1b);border:1px solid #20574b;color:#f2faf7;border-radius:19px;box-shadow:0 4px 10px rgba(0,0,0,.16)}
+.pkey.s{background:transparent;border-color:transparent;box-shadow:none;color:var(--mute)}
+.pkey:active:not(:disabled){background:#087e5b}
+.calcw{background:var(--card);border-color:var(--line)}
+@media(min-width:901px){.pos{align-items:start}.pos> .card:last-child{position:sticky;top:82px}}
+@media(max-width:900px){main{padding:10px 10px 108px}.pos{grid-template-columns:minmax(0,1fr)}.grid{grid-template-columns:repeat(auto-fill,minmax(125px,1fr))}}
+@media(max-width:600px){
+ header{padding:10px 12px}
+ main{padding:9px 9px 108px}
+ .card{padding:11px;border-radius:13px}
+ .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .tile{min-height:106px;padding:9px}
+ .tile .e{font-size:27px}
+ .bn{grid-template-columns:repeat(5,minmax(0,1fr))}
+ .bn button{min-width:0;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
 </style>
 </head>
 <body>
