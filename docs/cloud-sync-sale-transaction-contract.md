@@ -88,3 +88,18 @@ Exact table names, constraints, grants, and policies remain to be designed. All 
 
 ## Next gate
 Before writing migration SQL, confirm the intended permissions for the app's actual `Cashier`, `Admin`, and `Kitchen` roles (including whether `Admin` is the manager role), confirm the authorized receipt series rules, and write test cases for every `calc(t)` rule. Then draft the schema and transaction in this branch only. No production changes without explicit approval.
+
+## Confirmed receipt-numbering decision (planning only)
+
+The owner confirmed that all registers must use **one shared, server-controlled receipt-number sequence**.
+
+Required behavior for a future implementation:
+- Allocate the next receipt number on the server as part of the same atomic sale-completion transaction that records the sale.
+- Protect allocation with a database-level sequence/locking strategy so simultaneous sales from different registers cannot receive the same number.
+- Do not allocate official receipt numbers solely in browser JavaScript or local storage.
+- Make retries idempotent: retrying the same sale request must return the original sale and receipt number rather than consume another number or create a duplicate sale.
+- Define and test how failed/rolled-back sales affect numbering, and confirm applicable business/tax requirements before deciding whether gaps are permitted.
+- Store register/device identity as audit metadata, but do not make the receipt sequence per-register.
+- Keep the existing app, production branch, live database, and cloud sync unchanged until a separately approved implementation is tested in an isolated environment.
+
+Status: design decision recorded; no schema, SQL, function, deployment, or runtime change has been made.
