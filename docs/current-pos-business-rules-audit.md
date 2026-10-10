@@ -60,7 +60,7 @@ This document records behavior observed in the existing `index.html` so a future
 - Confirm whether insufficient-stock sales should always be rejected, including any authorized negative-stock workflow.
 - Confirm which payment methods are allowed and which require reference numbers; confirm duplicate-reference policy.
 - Confirm the intended rewards rules: 50 points = ₱25 discount, earn 1 point per ₱20 of sale total, Gold threshold of 200 points, and 2% Gold cashback.
-- Confirm refund policy for points/store credit and whether a refund is full-only or can be partial. Current code implements full-order refund and restores stock; it does not reverse customer points or Gold cashback.
+- **Owner-confirmed:** support both full-order and partial refunds. Partial refunds must be limited to original sold lines/quantities and the remaining refundable payment amount; use original sale pricing/discount/tax allocations, restore only refunded stock, and reverse the original points and Gold cashback/store credit without exceeding the original awards. If rewards being reversed have already been spent/redeemed, hold the refund for Admin review. Record the decision and process all effects atomically and idempotently. The current app does not yet implement these safeguards.
 - Confirm whether staff names should remain role-only in audit records or whether individual staff identities are needed. Shared role PINs cannot provide individual attribution.
 - Confirm actual authorized receipt series and receipt issuance requirements before any live rollout.
 
