@@ -103,3 +103,16 @@ Required behavior for a future implementation:
 - Keep the existing app, production branch, live database, and cloud sync unchanged until a separately approved implementation is tested in an isolated environment.
 
 Status: design decision recorded; no schema, SQL, function, deployment, or runtime change has been made.
+
+## Confirmed receipt-series status (planning only)
+
+The owner confirmed that the receipt-series start/end values currently configured in the POS are **test values**, not the actual authorized receipt series.
+
+Implementation constraints:
+- Treat existing start/end values as test configuration only; do not use them to issue production/official receipt numbers.
+- Before any live rollout, obtain and verify the real authorized receipt-series rules and limits with the owner and the appropriate accountant/tax adviser or issuing authority.
+- In the isolated test environment, use an explicitly labelled test series that cannot be confused with official receipts.
+- The server must enforce the configured series limits and reject allocation when exhausted; never silently restart or wrap the sequence.
+- Keep production and live database unchanged until separately approved.
+
+Status: decision recorded; no live app, database, schema, SQL, or function changes made.
