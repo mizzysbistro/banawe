@@ -116,3 +116,17 @@ Implementation constraints:
 - Keep production and live database unchanged until separately approved.
 
 Status: decision recorded; no live app, database, schema, SQL, or function changes made.
+
+
+## Owner-confirmed refund behavior (planning only)
+
+The owner confirmed that the POS should support both full-order and partial refunds.
+
+- A partial refund identifies the original sale and the specific lines/quantities being refunded. Validate positive quantities and ensure cumulative refunded quantity for a line never exceeds the quantity originally sold.
+- Calculate the refund from the original recorded sale prices, discounts, tax treatment and payment records; do not use current menu prices or current discount settings.
+- Track prior refunds per line and payment method. Never refund more than the remaining refundable amount. If the original payment mix cannot be refunded automatically, route the case to Admin review rather than guessing.
+- Restore inventory only for refunded quantities, exactly once.
+- Reverse the reward points and Gold cashback/store credit originally awarded. Define deterministic rounding/allocation for partial quantities before implementation; cumulative reversals must not exceed the original award.
+- If points/cashback being reversed have already been spent or redeemed, flag the refund for Admin review before completing it. Show the original award, amount already used, and proposed reversal, and record the Admin decision.
+- Record refund, payment adjustment, inventory movement, reward reversal and audit decision atomically. Use idempotency keys so retries or simultaneous registers cannot duplicate effects.
+- These are design requirements, not existing app behavior. No runtime code, database schema, SQL, function, production data, or deployment is changed by this planning note.
