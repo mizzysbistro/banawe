@@ -8,14 +8,14 @@
 - Cloud sales must remain OFF until the authentication, transaction, and concurrency tests pass.
 
 ## Current staff sign-in model
-The shop has no Supabase login for staff. Staff use PINs in the POS, and multiple staff members may share a role PIN (for example, Cashier).
+The shop has no Supabase login for staff. Staff use PINs in the POS, and multiple staff members may share a role PIN. The current checked-in app code defines default roles named `Cashier`, `Admin`, and `Kitchen`; it does not define a role literally named `Manager`. Confirm the intended mapping before implementing cloud permissions.
 
 Implications:
 - Treat a shared PIN as proof only that the operator knows the role credential; it does not identify the individual person using it.
 - A sale audit record may record the verified role and register, but must not claim reliable individual cashier attribution when a role PIN is shared.
 - Keep the familiar POS PIN screen, but verify the credential in a trusted server-side endpoint before issuing a short-lived, limited-purpose session/token. Do not trust a role name sent by the browser.
 - Store only a strong salted hash of each role PIN server-side; never store or log the raw PIN. A four-digit PIN is weak, so enforce server-side rate limits, increasing delays/temporary lockouts, and audit failed attempts. Do not reveal whether a particular PIN/role exists.
-- Restrict each role to explicit permissions. For example, Cashier can complete ordinary sales; refunds, stock adjustments, price overrides, and shift corrections should require the configured manager permission.
+- Define an explicit permission list per actual role. Cashier can complete ordinary sales if approved; manager-level actions such as refunds, stock adjustments, price overrides, and shift corrections must be mapped to the actual role intended to authorize them.
 - PIN changes and role deactivation must take effect centrally across all registers. Do not use browser local storage as the source of truth for cloud authorization.
 - If individual staff accountability is needed later, introduce individual staff PINs or a separate staff selection/identification step; do not infer identity from a shared role PIN.
 
@@ -41,7 +41,7 @@ One authorized request, `complete_sale`, represents a fully paid ticket. The dat
 - `register_id`: stable register/device identifier.
 - `staff_role_session`: server-issued short-lived credential; do not trust a browser-supplied role string.
 - `lines`: product IDs, quantities, approved modifiers/options, and any permitted seat/course details.
-- `discount/tax/customer-credit inputs`: identifiers and selections only where possible; server recomputes eligibility and totals.
+- `discount/tax/customer-credit inputs`: identifiers and selections only where possible; server recomputes totals and eligibility.
 - `payments`: method, amount, and external reference when relevant.
 - `shift_id`: currently open server-recognized shift.
 - `note`: optional bounded text.
@@ -57,7 +57,7 @@ The browser should not be allowed to submit an authoritative stock balance, rece
 
 ## Suggested database responsibilities
 Use normalized records rather than one shared JSON snapshot:
-- shop/register/staff-role authorization and PIN verifier;
+- shop/register/role authorization and PIN verifier;
 - menu items and stock quantity;
 - sales and sale lines;
 - payments and unique external payment references where required;
@@ -75,8 +75,8 @@ Exact table names, constraints, grants, and policies remain to be designed. All 
 ## Acceptance tests for this first slice
 - An invalid PIN cannot obtain a server-issued role session.
 - Repeated PIN failures trigger the configured server-side throttling/temporary lockout.
-- A cashier-role session cannot perform manager-only actions.
-- A deactivated/changed role PIN stops working across all registers after the intended session-expiry/revocation window.
+- A cashier-role session cannot perform actions outside its explicit permission list.
+- A role PIN change or deactivation takes effect across all registers after the intended session-expiry/revocation window.
 - Two registers sell the last unit at the same time: at most one sale succeeds.
 - Two simultaneous sales receive distinct authorized receipt numbers.
 - Retrying the same request after a timeout returns the same order/receipt and changes stock only once.
@@ -87,4 +87,4 @@ Exact table names, constraints, grants, and policies remain to be designed. All 
 - Existing local-only mode still works while cloud sync remains opt-in and OFF by default.
 
 ## Next gate
-Before writing migration SQL, map the exact existing PIN/role behavior and manager permissions, confirm the authorized receipt series rules, and write test cases for every `calc(t)` rule. Then draft the schema and transaction in this branch only. No production changes without explicit approval.
+Before writing migration SQL, confirm the intended permissions for the app's actual `Cashier`, `Admin`, and `Kitchen` roles (including whether `Admin` is the manager role), confirm the authorized receipt series rules, and write test cases for every `calc(t)` rule. Then draft the schema and transaction in this branch only. No production changes without explicit approval.
