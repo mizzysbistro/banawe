@@ -49,3 +49,15 @@ Use a deterministic test menu and customer balances. Store the inputs and expect
 
 ## Pass criteria
 All transaction invariants must hold under retries and concurrency: each confirmed sale is recorded exactly once; payments reconcile to amount due plus change; stock never goes negative unless an explicitly approved policy allows it; customer points/credit change exactly once; refunds and stock restoration happen exactly once; receipt numbers are unique and inside the configured series; no device can overwrite another device’s business records with a stale snapshot.
+
+
+## Full and partial refund tests (planning only)
+- [ ] Full refund reverses all refundable payments, restores all sold quantities exactly once, and reverses the original sale's reward points and Gold cashback/store credit exactly once.
+- [ ] Partial refund of one line/quantity returns only the eligible amount for that line using the original sale's recorded pricing and discount/tax allocation.
+- [ ] Multiple partial refunds cannot cumulatively exceed any original line quantity or the remaining refundable payment amount.
+- [ ] Mixed-payment refunds follow the approved allocation policy and never refund more than the amount paid; ambiguous payment cases route to Admin review.
+- [ ] Partial reward reversals use deterministic rounding; total points/cashback reversed across partial refunds never exceeds the original award.
+- [ ] If rewards to be reversed have already been spent/redeemed, the refund is held for Admin review and displays the original award, amount used and proposed reversal.
+- [ ] Admin approval/rejection is audited; rejected or failed refunds leave payment, stock and reward balances unchanged.
+- [ ] Repeating or concurrently submitting the same full/partial refund does not duplicate payment adjustments, stock restoration or reward reversals.
+- [ ] Failure at any step rolls back the entire refund transaction.
