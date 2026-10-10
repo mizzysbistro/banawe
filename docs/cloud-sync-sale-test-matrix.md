@@ -61,3 +61,13 @@ All transaction invariants must hold under retries and concurrency: each confirm
 - [ ] Admin approval/rejection is audited; rejected or failed refunds leave payment, stock and reward balances unchanged.
 - [ ] Repeating or concurrently submitting the same full/partial refund does not duplicate payment adjustments, stock restoration or reward reversals.
 - [ ] Failure at any step rolls back the entire refund transaction.
+
+
+## Refund allocation and transaction-integrity tests (design follow-up)
+- [ ] Cash overpayment is recorded separately from change; refund ceiling uses net cash contribution, not cash handed over.
+- [ ] Partial refunds of discounted, SC/PWD, zero-rated, or points/store-credit-assisted sales use immutable sale-time line allocations and reconcile to the original sale.
+- [ ] Order-level discount and cents-rounding allocations are deterministic; the sum across all lines equals the recorded original discount/tax totals.
+- [ ] Mixed-tender refund allocations sum to the approved refund amount and never exceed each original tender's remaining refundable contribution.
+- [ ] Store credit used and points redeemed on the original sale are restored proportionally under the approved policy; earned points and Gold cashback are reversed without exceeding the original awards.
+- [ ] A provider refund that is pending, failed, or uncertain is not displayed as successfully refunded and can be reconciled without duplicate payout.
+- [ ] Refund transaction failure leaves refund status, payment allocations, stock movements, customer ledger and audit state unchanged.
